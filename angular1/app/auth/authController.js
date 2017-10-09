@@ -1,29 +1,25 @@
-(function() {
-  angular.module('primeiraApp').controller('AuthCtrl', [
-      '$location',
-      'msgs',
-      AuthController
-  ])
+(function () {
+   angular.module('primeiraApp')
+       .controller('AuthCtrl',AuthController)
 
-  function AuthController($location, msgs) {
-    const vm = this
+    AuthController.$inject = ['$location','msgs','auth']
 
-    vm.loginMode = true
+    function AuthController($location,msgs,auth) {
+        const vm = this
 
-    vm.changeMode = () => vm.loginMode = !vm.loginMode
+        vm.loginMode = true
+        vm.changeMode = () => vm.loginMode = !vm.loginMode
+        vm.login = () => {
+            auth.login(vm.user, err => err ? msgs.addError(err) : $location.path('/'))
+        }
+        vm.signup = () => {
+            auth.signup(vm.user, err => err ? msgs.addError(err) : $location.path('/'))
+        }
 
-    vm.login = () => {
-      console.log(`Login... ${vm.user.email}`)
-    }
+        vm.getUser = () => auth.getUser()
 
-    vm.signup = () => {
-      console.log(`Signup... ${vm.user.email}`)
-    }
-
-    vm.getUser = () => ({name: 'Usuário MOCK', email: 'mock@cod3r.com.br' })
-
-    vm.logout = () => {
-      console.log('logout...')
-    }
-  }
+        vm.logout = () => {
+            auth.logout(() => $location.path('/'))
+        }
+   }
 })()
